@@ -2,11 +2,8 @@ version: '2.1'
 
 services:
   rabbit:
-    image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
-      - RABBITMQ_DEFAULT_VHOST=devhub
+    image: rabbit:latest
+    env_file: rabbit.env
     expose: 
       - "5672"
       - "15672"
