@@ -1,0 +1,29 @@
+version: '2.1'
+
+services:
+  rabbit:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_VHOST=devhub
+    expose: 
+      - "5672"
+      - "15672"
+    ports:
+      - "15672:15672"
+  stacosys:
+    image: stacosys:latest
+    expose:
+      - "8100"
+    depends_on:
+      - rabbit
+  hugo-serve:
+    image: hugo-serve:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ~/work/blog:/site
+    depends_on:
+      - stacosys
+    restart: always
