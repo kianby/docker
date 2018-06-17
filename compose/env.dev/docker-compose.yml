@@ -6,6 +6,25 @@ services:
     env_file: rabbit.env
     expose: 
       - "5672"
+  srmail:
+    image: srmail:latest
+    volumes:
+      - ~/work/data.dev/srmail.config.json:/app/config.json
+      - ~/work/data.dev/srmail.db.sqlite:/app/srmail/db.sqlite
+    depends_on:
+      - rabbit 
+  mail2run:
+    image: mail2run:latest
+    volumes:
+      - ~/work/data.dev/mail2run.config.json:/app/config.json
+    depends_on:
+      - srmail
+  mail2diaspora:
+    image: mail2diaspora:latest
+    volumes:
+      - ~/work/data.dev/mail2diaspora.config.json:/app/config.json
+    depends_on:
+      - srmail      
   stacosys:
     image: stacosys:latest
     volumes:
@@ -15,13 +34,7 @@ services:
       - "8100"
     depends_on:
       - rabbit
-  srmail:
-    image: srmail:latest
-    volumes:
-      - ~/work/data.dev/srmail.config.json:/app/config.json
-      - ~/work/data.dev/srmail.db.sqlite:/app/srmail/db.sqlite
-    depends_on:
-      - rabbit      
+      - srmail     
   hugo-serve:
     image: hugo-serve:latest
     ports:

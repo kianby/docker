@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd /app/stacosys
-python3 app/stacosys.py $STACOSYS_CONFIG
+cd /app/$APP_NAME
+python3 app/$APP_NAME.py $APP_CONFIG
