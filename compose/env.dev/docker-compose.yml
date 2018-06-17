@@ -11,6 +11,9 @@ services:
       - "15672:15672"
   stacosys:
     image: stacosys:latest
+    volumes:
+      - ~/work/stacosys/config.json:/app/config.json
+      - ~/work/dataprod/data/stacosys/db.sqlite:/app/stacosys/db.sqlite
     expose:
       - "8100"
     depends_on:
@@ -23,4 +26,3 @@ services:
       - ~/work/blog:/site
     depends_on:
       - stacosys
-    restart: always
