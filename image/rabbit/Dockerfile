@@ -1,4 +1,4 @@
-FROM rabbitmq:3-management
+FROM rabbitmq:latest
 
 ENV RABBITMQ_APP_USER user
 ENV RABBITMQ_APP_PASSWORD user
@@ -8,4 +8,3 @@ COPY docker-init.sh /usr/local/bin/
 RUN chmod +x usr/local/bin/docker-init.sh
 
 CMD ["docker-init.sh"]
-#CMD ["rabbitmq-server"]
