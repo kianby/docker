@@ -6,9 +6,6 @@ services:
     env_file: rabbit.env
     expose: 
       - "5672"
-      - "15672"
-    ports:
-      - "15672:15672"
   stacosys:
     image: stacosys:latest
     volumes:
