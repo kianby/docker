@@ -9,12 +9,19 @@ services:
   stacosys:
     image: stacosys:latest
     volumes:
-      - ~/work/stacosys/config.json:/app/config.json
-      - ~/work/dataprod/data/stacosys/db.sqlite:/app/stacosys/db.sqlite
+      - ~/work/data.dev/stacosys.config.json:/app/config.json
+      - ~/work/data.dev/stacosys.db.sqlite:/app/stacosys/db.sqlite
     expose:
       - "8100"
     depends_on:
       - rabbit
+  srmail:
+    image: srmail:latest
+    volumes:
+      - ~/work/data.dev/srmail.config.json:/app/config.json
+      - ~/work/data.dev/srmail.db.sqlite:/app/srmail/db.sqlite
+    depends_on:
+      - rabbit      
   hugo-serve:
     image: hugo-serve:latest
     ports:
