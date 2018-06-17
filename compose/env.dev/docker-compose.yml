@@ -1,4 +1,4 @@
-version: '3'
+version: '2.1'
 
 services:
   rabbit:
@@ -16,22 +16,20 @@ services:
       - ~/work/data.dev/srmail.config.json:/app/config.json
       - ~/work/data.dev/srmail.db.sqlite:/app/srmail/db.sqlite
     depends_on:
-      - rabbit 
-    restart: on-failure
+      rabbit:
+        condition: service_healthy
   mail2run:
     image: mail2run:latest
     volumes:
       - ~/work/data.dev/mail2run.config.json:/app/config.json
     depends_on:
       - srmail
-    restart: on-failure
   mail2diaspora:
     image: mail2diaspora:latest
     volumes:
       - ~/work/data.dev/mail2diaspora.config.json:/app/config.json
     depends_on:
-      - srmail   
-    restart: on-failure   
+      - srmail  
   stacosys:
     image: stacosys:latest
     volumes:
@@ -40,9 +38,10 @@ services:
     expose:
       - "8100"
     depends_on:
-      - rabbit  
-      - srmail  
-    restart: on-failure   
+      rabbit:
+        condition: service_healthy
+      srmail:
+        condition: service_started   
   hugo-serve:
     image: hugo-serve:latest
     ports:
@@ -51,4 +50,3 @@ services:
       - ~/work/blog:/site
     depends_on:
       - stacosys
-    restart: on-failure
