@@ -2,23 +2,55 @@ version: '2.1'
 
 services:
   rabbit:
-    image: rabbitmq:latest
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    depends_on:
-      - hugo-git-sync
-    volumes:
-      - blog_html:/usr/share/nginx/html
-    restart: always
+    image: rabbit:latest
+    env_file: rabbit.env
+    expose: 
+      - "5672"
+    healthcheck:
+      test: ["CMD", "check-running.sh"]
+      interval: 5s
+      timeout: 3s
+    labels:
+      - "traefik.enable=false"
   hugo-git-sync:
     image: hugo-git-sync:latest
     environment:
       REPO_LINK: "https://github.com/kianby/blog.git"
+      CONFIG_FILE: /config.toml
     volumes:
-      - blog_html:/var/www/html:z
-    restart: always
+      - ./blog.config.toml:/config.toml
+      - blog_html:/var/www/html:z 
+    labels:
+      - "traefik.enable=false"     
+  nginx-blog:
+    image: nginx:latest
+    depends_on:
+      - hugo-git-sync
+    networks:
+      - web
+    volumes:
+      - blog_html:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=blogduyax"
+      - "traefik.frontend.rule=Host:blogduyax.madyanne.space"
+      - "traefik.docker.network=web"      
+  reverse-proxy:
+      image: traefik # The official Traefik docker image
+      command: --api --docker # Enables the web UI and tells Træfik to listen to docker
+      ports:
+        - "80:80"     # The HTTP port
+        - "443:443"
+        - "8080:8080" # The Web UI (enabled by --api)
+      networks:
+        - web
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+        - ./traefik.toml:/traefik.toml
+        - ./acme.json:/acme.json
 volumes:
   blog_html:
     driver: local
+networks:
+  web:
+    external: true    
