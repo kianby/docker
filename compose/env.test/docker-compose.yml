@@ -3,7 +3,7 @@ version: '2.1'
 services:
   rabbit:
     image: rabbit:latest
-    env_file: rabbit.env
+    env_file: ~/work/docker.data/rabbit.env
     expose: 
       - "5672"
     healthcheck:
@@ -12,16 +12,51 @@ services:
       timeout: 3s
     labels:
       - "traefik.enable=false"
+  srmail:
+    image: srmail:latest
+    volumes:
+      - ~/work/docker.data/srmail.config.json:/app/config.json
+      - ~/work/docker.data/srmail.db.sqlite:/app/srmail/db.sqlite
+    depends_on:
+      rabbit:
+        condition: service_healthy   
+  mail2run:
+    image: mail2run:latest
+    volumes:
+      - ~/work/docker.data/mail2run.config.json:/app/config.json
+    depends_on:
+      - srmail      
+  mail2diaspora:
+    image: mail2diaspora:latest
+    volumes:
+      - ~/work/docker.data/mail2diaspora.config.json:/app/config.json
+    depends_on:
+      - srmail  
+  stacosys:
+    image: stacosys:latest
+    volumes:
+      - ~/work/docker.data/stacosys.config.json:/app/config.json
+      - ~/work/docker.data/stacosys.db.sqlite:/app/stacosys/db.sqlite
+    expose:
+      - "8100"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      srmail:
+        condition: service_started                       
   hugo-git-sync:
     image: hugo-git-sync:latest
     environment:
       REPO_LINK: "https://github.com/kianby/blog.git"
       CONFIG_FILE: /config.toml
     volumes:
-      - ./blog.config.toml:/config.toml
+      - ~/work/docker.data/test/blog.config.toml:/config.toml
       - blog_html:/var/www/html:z 
     labels:
-      - "traefik.enable=false"     
+      - "traefik.enable=false" 
+    depends_on:
+      stacosys:
+        condition: service_started    
   nginx-blog:
     image: nginx:latest
     depends_on:
@@ -46,8 +81,8 @@ services:
         - web
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
-        - ./traefik.toml:/traefik.toml
-        - ./acme.json:/acme.json
+        - ~/work/docker.data/test/traefik.toml:/traefik.toml
+        - ~/work/docker.data/test/acme.json:/acme.json
 volumes:
   blog_html:
     driver: local

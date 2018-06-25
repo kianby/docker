@@ -3,7 +3,7 @@ version: '2.1'
 services:
   rabbit:
     image: rabbit:latest
-    env_file: rabbit.env
+    env_file: ~/work/docker.data/rabbit.env
     expose: 
       - "5672"
     healthcheck:
@@ -13,28 +13,28 @@ services:
   srmail:
     image: srmail:latest
     volumes:
-      - ~/work/data.dev/srmail.config.json:/app/config.json
-      - ~/work/data.dev/srmail.db.sqlite:/app/srmail/db.sqlite
+      - ~/work/docker.data/srmail.config.json:/app/config.json
+      - ~/work/docker.data/srmail.db.sqlite:/app/srmail/db.sqlite
     depends_on:
       rabbit:
         condition: service_healthy
   mail2run:
     image: mail2run:latest
     volumes:
-      - ~/work/data.dev/mail2run.config.json:/app/config.json
+      - ~/work/docker.data/mail2run.config.json:/app/config.json
     depends_on:
       - srmail
   mail2diaspora:
     image: mail2diaspora:latest
     volumes:
-      - ~/work/data.dev/mail2diaspora.config.json:/app/config.json
+      - ~/work/docker.data/mail2diaspora.config.json:/app/config.json
     depends_on:
       - srmail  
   stacosys:
     image: stacosys:latest
     volumes:
-      - ~/work/data.dev/stacosys.config.json:/app/config.json
-      - ~/work/data.dev/stacosys.db.sqlite:/app/stacosys/db.sqlite
+      - ~/work/docker.data/stacosys.config.json:/app/config.json
+      - ~/work/docker.data/stacosys.db.sqlite:/app/stacosys/db.sqlite
     expose:
       - "8100"
     depends_on:
