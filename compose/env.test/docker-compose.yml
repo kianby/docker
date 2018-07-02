@@ -37,6 +37,11 @@ services:
     volumes:
       - ~/work/docker.data/stacosys.config.json:/app/config.json
       - ~/work/docker.data/stacosys.db.sqlite:/app/stacosys/db.sqlite
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=stacosys"
+      - "traefik.frontend.rule=Host:blogduyax.madyanne.space;Method:POST;Path:/newcomment"
+      - "traefik.docker.network=web"
     expose:
       - "8100"
     depends_on:
@@ -83,6 +88,8 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
         - ~/work/docker.data/test/traefik.toml:/traefik.toml
         - ~/work/docker.data/test/acme.json:/acme.json
+      labels:
+        - "traefik.enable=false"        
 volumes:
   blog_html:
     driver: local
