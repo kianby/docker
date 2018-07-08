@@ -10,8 +10,6 @@ services:
       test: ["CMD", "check-running.sh"]
       interval: 5s
       timeout: 3s
-    labels:
-      - "traefik.enable=false"
   srmail:
     image: srmail:latest
     volumes:
@@ -37,18 +35,13 @@ services:
     volumes:
       - ~/work/docker.data/stacosys.config.json:/app/config.json
       - ~/work/docker.data/stacosys.db.sqlite:/app/stacosys/db.sqlite
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=stacosys"
-      - "traefik.frontend.rule=Host:blogduyax.madyanne.space;Method:POST;Path:/newcomment"
-      - "traefik.docker.network=web"
     expose:
       - "8100"
     depends_on:
       rabbit:
         condition: service_healthy
       srmail:
-        condition: service_started                       
+        condition: service_started                      
   hugo-git-sync:
     image: hugo-git-sync:latest
     environment:
@@ -57,8 +50,6 @@ services:
     volumes:
       - ~/work/docker.data/test/blog.config.toml:/config.toml
       - blog_html:/var/www/html:z 
-    labels:
-      - "traefik.enable=false" 
     depends_on:
       stacosys:
         condition: service_started    
@@ -66,33 +57,26 @@ services:
     image: nginx:latest
     depends_on:
       - hugo-git-sync
-    networks:
-      - web
     volumes:
       - blog_html:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=blogduyax"
-      - "traefik.frontend.rule=Host:blogduyax.madyanne.space"
-      - "traefik.docker.network=web"      
   reverse-proxy:
-      image: traefik # The official Traefik docker image
-      command: --api --docker # Enables the web UI and tells Træfik to listen to docker
+      image: linuxserver/letsencrypt
+      environment:
+        EMAIL: "admin@madyanne.space"
+        URL: "madyanne.space"
+        SUBDOMAINS: "blogduyax"
+        VALIDATION: "http"
+        TZ: "Europe/Paris"
+        PUID: 1000
+        PGID: 1000
       ports:
         - "80:80"     # The HTTP port
         - "443:443"
-        - "8080:8080" # The Web UI (enabled by --api)
-      networks:
-        - web
+      expose:
+        - "80"
+        - "443"
       volumes:
-        - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
-        - ~/work/docker.data/test/traefik.toml:/traefik.toml
-        - ~/work/docker.data/test/acme.json:/acme.json
-      labels:
-        - "traefik.enable=false"        
+        - ~/work/docker.data/test/reverseproxy:/config
 volumes:
   blog_html:
-    driver: local
-networks:
-  web:
-    external: true    
+    driver: local    
