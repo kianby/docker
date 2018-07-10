@@ -13,6 +13,6 @@ WORKDIR /app
 RUN git clone https://github.com/kianby/${APP_NAME}.git
 RUN python3 -m pip install -r /app/${APP_NAME}/requirements.txt
 
-EXPOSE ${STACOSYS_PORT}
+EXPOSE ${APP_PORT}
 
 CMD ["docker-init.sh"]
