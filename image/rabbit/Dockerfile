@@ -6,9 +6,6 @@ ENV RABBITMQ_APP_VHOST app
 
 RUN apk update && apk add bash && rm -rf /var/cache/apk/* 
 
-COPY check-running.sh /usr/local/bin/
-RUN chmod +x usr/local/bin/check-running.sh
-
 COPY docker-init.sh /usr/local/bin/
 RUN chmod +x usr/local/bin/docker-init.sh
 
