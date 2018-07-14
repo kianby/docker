@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  rabbit:
+    image: rabbit:latest
+    environment:
+      RABBITMQ_APP_USER: ${RABBITMQ_APP_USER}
+      RABBITMQ_APP_PASSWORD: ${RABBITMQ_APP_PASSWORD}
+      RABBITMQ_APP_VHOST: ${RABBITMQ_APP_VHOST}
+    expose: 
+      - "5672"
+  srmail:
+    image: pythonapp:latest
+    environment: 
+      APP_NAME: srmail
+      APP_CONFIG: /app/config.json    
+    volumes:
+      - ${SOURCEDIR}/srmail:/app/srmail
+      - ${DATADIR}/srmail.config.json:/app/config.json
+      - ${DATADIR}/srmail.db.sqlite:/app/srmail/db.sqlite
+  mail2run:
+    image: pythonapp:latest
+    environment:       
+      APP_NAME: mail2run
+      APP_CONFIG: /app/config.json     
+    volumes:
+      - ${SOURCEDIR}/mail2run:/app/mail2run
+      - ${DATADIR}/mail2run.config.json:/app/config.json
+  mail2diaspora:
+    image: pythonapp:latest
+    environment:       
+      APP_NAME: mail2diaspora
+      APP_CONFIG: /app/config.json     
+    volumes:
+      - ${SOURCEDIR}/mail2diaspora:/app/mail2diaspora
+      - ${DATADIR}/mail2diaspora.config.json:/app/config.json 
+  stacosys:
+    image: pythonapp:latest
+    environment: 
+      APP_NAME: stacosys
+      APP_PORT: 8100
+      APP_CONFIG: /app/config.json
+    volumes:
+      - ${SOURCEDIR}/stacosys:/app/stacosys
+      - ${DATADIR}/stacosys.config.json:/app/config.json
+      - ${DATADIR}/stacosys.db.sqlite:/app/stacosys/db.sqlite
+    expose:
+      - "8100"  
+  hugo-serve:
+    image: hugo-serve:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ${SOURCEDIR}/blog:/site
