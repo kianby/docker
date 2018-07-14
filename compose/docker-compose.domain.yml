@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  hugo-git-sync:
+    image: hugo-git-sync:latest
+    environment:
+      REPO_LINK: ${HUGO_GITURL}
+      CONFIG_FILE: /config.toml
+    volumes:
+      - ${DATADIR}/blog.config.toml:/config.toml
+      - blog_html:/var/www/html:z   
+  nginx-blog:
+    image: nginx:latest
+    volumes:
+      - blog_html:/usr/share/nginx/html
+  reverse-proxy:
+      image: linuxserver/letsencrypt
+      environment:
+        EMAIL: ${REVERSE_EMAIL}
+        URL: ${REVERSE_DOMAIN}
+        SUBDOMAINS: ${REVERSE_SUBDOMAINS}
+        VALIDATION: ${REVERSE_VALIDATION}
+        TZ: "Europe/Paris"
+        PUID: ${REVERSE_PUID}
+        PGID: ${REVERSE_GUID}
+      ports:
+        - "80:80"     # The HTTP port
+        - "443:443"
+      expose:
+        - "80"
+        - "443"
+      volumes:
+        - ${DATADIR}/reverseproxy:/config
+volumes:
+  blog_html:
+    driver: local  

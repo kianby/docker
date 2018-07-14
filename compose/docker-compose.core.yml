@@ -46,9 +46,3 @@ services:
       - ${DATADIR}/stacosys.db.sqlite:/app/stacosys/db.sqlite
     expose:
       - "8100"  
-  hugo-serve:
-    image: hugo-serve:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ${SOURCEDIR}/blog:/site

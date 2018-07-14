@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  hugo-serve:
+    image: hugo-serve:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ${SOURCEDIR}/blog:/site
