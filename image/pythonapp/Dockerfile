@@ -3,7 +3,6 @@ FROM python:alpine3.7
 ENV APP_NAME appname
 ENV APP_PORT 80
 ENV APP_CONFIG /app/config.json
-ENV APP_GITROOT https://github.com/coder
 
 RUN apk update && apk add bash && apk add git && rm -rf /var/cache/apk/* 
 
