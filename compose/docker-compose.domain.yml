@@ -13,24 +13,68 @@ services:
     image: nginx:latest
     volumes:
       - blog_html:/usr/share/nginx/html
+  miniflux:
+    image: miniflux/miniflux:2.0.9
+    ports:
+      - "8080"
+    environment:
+      #- RUN_MIGRATIONS=0
+      #- CREATE_ADMIN=1
+      #- ADMIN_USERNAME=${MINIFLUX_USERNAME}
+      #- ADMIN_PASSWORD=${MINIFLUX_PASSWORD}
+      - DATABASE_URL=postgres://miniflux:secret@minifluxdb/miniflux?sslmode=disable
+  minifluxdb:
+    image: postgres:10.1
+    environment:
+      - POSTGRES_USER=miniflux
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ${DATADIR}/postgres:/var/lib/postgresql/data    
+  transmission:
+    image: linuxserver/transmission
+    environment:
+      TZ: "Europe/Paris"
+      PUID: ${PUID}
+      PGID: ${GUID}
+    ports:
+      - "9091:9091"
+      - "51413:51413"    
+      - "51413:51413/udp"
+    volumes:
+      - ${DATADIR}/transmission:/config 
+      - ${DATADIR}/torrent/downloads:/downloads            
+      - ${DATADIR}/torrent/watch:/watch
+  wallabag:
+    image: wallabag/wallabag
+    environment:
+      - SYMFONY__ENV__MAILER_HOST=${SMTP_HOST}
+      - SYMFONY__ENV__MAILER_USER=${SMTP_USER}
+      - SYMFONY__ENV__MAILER_PASSWORD=${SMTP_PASSWORD}
+      - SYMFONY__ENV__FROM_EMAIL=${WALLABAG_FROM_EMAIL}
+      - SYMFONY__ENV__DOMAIN_NAME=${WALLABAG_URL}
+    ports:
+      - "80"
+    volumes:
+      - ${DATADIR}/wallabag/data:/var/www/wallabag/data
+      - ${DATADIR}/wallabag/images:/var/www/wallabag/web/assets/images
   reverse-proxy:
-      image: linuxserver/letsencrypt
-      environment:
-        EMAIL: ${REVERSE_EMAIL}
-        URL: ${REVERSE_DOMAIN}
-        SUBDOMAINS: ${REVERSE_SUBDOMAINS}
-        VALIDATION: ${REVERSE_VALIDATION}
-        TZ: "Europe/Paris"
-        PUID: ${REVERSE_PUID}
-        PGID: ${REVERSE_GUID}
-      ports:
-        - "80:80"     # The HTTP port
-        - "443:443"
-      expose:
-        - "80"
-        - "443"
-      volumes:
-        - ${DATADIR}/reverseproxy:/config
+    image: linuxserver/letsencrypt
+    environment:
+      EMAIL: ${REVERSE_EMAIL}
+      URL: ${REVERSE_DOMAIN}
+      SUBDOMAINS: ${REVERSE_SUBDOMAINS}
+      VALIDATION: ${REVERSE_VALIDATION}
+      TZ: "Europe/Paris"
+      PUID: ${PUID}
+      PGID: ${GUID}
+    ports:
+      - "80:80"     # The HTTP port
+      - "443:443"
+    expose:
+      - "80"
+      - "443"
+    volumes:
+      - ${DATADIR}/reverseproxy:/config
 volumes:
   blog_html:
-    driver: local  
+    driver: local

@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "${PORT_PORTAINER}:9000"     # The HTTP port      
+    expose:
+      - ${PORT_PORTAINER}
   rabbit:
     image: rabbit:latest
     environment:
@@ -38,11 +48,14 @@ services:
     image: pythonapp:latest
     environment: 
       APP_NAME: stacosys
-      APP_PORT: 8100
+      APP_PORT: ${PORT_STACOSYS}
       APP_CONFIG: /app/config.json
     volumes:
       - ${SOURCEDIR}/stacosys:/app/stacosys
       - ${DATADIR}/stacosys.config.json:/app/config.json
       - ${DATADIR}/stacosys.db.sqlite:/app/stacosys/db.sqlite
     expose:
-      - "8100"  
+      - ${PORT_STACOSYS}  
+
+volumes:
+  portainer_data:
