@@ -7,29 +7,12 @@ services:
       REPO_LINK: ${HUGO_GITURL}
       CONFIG_FILE: /config.toml
     volumes:
-      - ${DATADIR}/blog.config.toml:/config.toml
+      - ${DATADIR}/blogduyax/blog.config.toml:/config.toml
       - blog_html:/var/www/html:z   
   nginx-blog:
     image: nginx:latest
     volumes:
       - blog_html:/usr/share/nginx/html
-  miniflux:
-    image: miniflux/miniflux:2.0.9
-    ports:
-      - "8080"
-    environment:
-      #- RUN_MIGRATIONS=0
-      #- CREATE_ADMIN=1
-      #- ADMIN_USERNAME=${MINIFLUX_USERNAME}
-      #- ADMIN_PASSWORD=${MINIFLUX_PASSWORD}
-      - DATABASE_URL=postgres://miniflux:secret@minifluxdb/miniflux?sslmode=disable
-  minifluxdb:
-    image: postgres:10.1
-    environment:
-      - POSTGRES_USER=miniflux
-      - POSTGRES_PASSWORD=secret
-    volumes:
-      - ${DATADIR}/postgres:/var/lib/postgresql/data    
   transmission:
     image: linuxserver/transmission
     environment:
@@ -42,8 +25,7 @@ services:
       - "51413:51413/udp"
     volumes:
       - ${DATADIR}/transmission:/config 
-      - ${DATADIR}/torrent/downloads:/downloads            
-      - ${DATADIR}/torrent/watch:/watch
+      - downloads:/downloads
   wallabag:
     image: wallabag/wallabag
     environment:
@@ -57,6 +39,12 @@ services:
     volumes:
       - ${DATADIR}/wallabag/data:/var/www/wallabag/data
       - ${DATADIR}/wallabag/images:/var/www/wallabag/web/assets/images
+  shaarli:
+    image: shaarli/shaarli:stable
+    ports:
+      - "80"
+    volumes:
+      - ${DATADIR}/shaarli:/var/www/shaarli/data      
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -75,6 +63,9 @@ services:
       - "443"
     volumes:
       - ${DATADIR}/reverseproxy:/config
+      - downloads:/torrents_downloads
 volumes:
   blog_html:
+    driver: local
+  downloads:
     driver: local
