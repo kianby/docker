@@ -12,7 +12,7 @@ services:
       - ${DATADIR}/stacosys/stacosys.config.json:/app/config.json
       - ${DATADIR}/stacosys/stacosys.db.sqlite:/app/stacosys/db.sqlite
       - blog_html:/var/www/html
-    expose:
+    ports:
       - ${PORT_STACOSYS}
   hugo-git-sync:
     image: hugo-git-sync:latest
