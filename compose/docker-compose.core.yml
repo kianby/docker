@@ -43,19 +43,7 @@ services:
       APP_CONFIG: /app/config.json     
     volumes:
       - ${SOURCEDIR}/mail2diaspora:/app/mail2diaspora
-      - ${DATADIR}/mail2diaspora/mail2diaspora.config.json:/app/config.json 
-  stacosys:
-    image: pythonapp:latest
-    environment: 
-      APP_NAME: stacosys
-      APP_PORT: ${PORT_STACOSYS}
-      APP_CONFIG: /app/config.json
-    volumes:
-      - ${SOURCEDIR}/stacosys:/app/stacosys
-      - ${DATADIR}/stacosys/stacosys.config.json:/app/config.json
-      - ${DATADIR}/stacosys/stacosys.db.sqlite:/app/stacosys/db.sqlite
-    expose:
-      - ${PORT_STACOSYS}  
+      - ${DATADIR}/mail2diaspora/mail2diaspora.config.json:/app/config.json  
 
 volumes:
   portainer_data:
