@@ -1,4 +1,4 @@
-FROM python:alpine3.7
+FROM python:3.6-alpine
 
 ENV APP_NAME appname
 ENV APP_PORT 80
