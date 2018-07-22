@@ -3,7 +3,7 @@
 # start
 export RABBITMQ_PID_FILE=/tmp/rabbitmq.pid
 rabbitmq-server &
-rabbitmqctl wait /tmp/rabbitmq.pid -t 20
+rabbitmqctl wait /tmp/rabbitmq.pid -t 60
 
 # configure
 rabbitmqctl add_vhost $RABBITMQ_APP_VHOST
