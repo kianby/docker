@@ -16,4 +16,6 @@ WORKDIR /app
 COPY requirements.txt . 
 RUN python3 -m pip install -r requirements.txt
 
+COPY patch_diaspy/connection.py /usr/local/lib/python3.6/site-packages/diaspy/connection.py
+
 CMD ["docker-init.sh"]
