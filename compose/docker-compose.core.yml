@@ -1,6 +1,12 @@
 version: '3'
 
 services:
+  logger:
+    image: bobrik/syslog-ng    
+    volumes:
+      - syslog:/var/log/syslog-ng
+    ports:
+      - "514:514"
   portainer:
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
@@ -46,4 +52,5 @@ services:
       - ${DATADIR}/mail2diaspora/mail2diaspora.config.json:/app/config.json  
 
 volumes:
+  syslog:
   portainer_data:

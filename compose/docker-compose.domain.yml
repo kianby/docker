@@ -12,6 +12,11 @@ services:
       - ${DATADIR}/stacosys/stacosys.config.json:/app/config.json
       - ${DATADIR}/stacosys/stacosys.db.sqlite:/app/stacosys/db.sqlite
       - blog_html:/var/www/html
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://127.0.0.1:514"      
+        tag: "stacosys"
     expose:
       - ${PORT_STACOSYS}
   hugo-git-sync:
@@ -73,9 +78,9 @@ services:
       - "443:443"
     volumes:
       - ${DATADIR}/reverseproxy:/config
+      - syslog:/syslog
       - downloads:/torrents_downloads
 volumes:
+  syslog:
   blog_html:
-    driver: local
   downloads:
-    driver: local
