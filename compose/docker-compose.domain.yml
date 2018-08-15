@@ -58,11 +58,12 @@ services:
       - ${DATADIR}/wallabag/data:/var/www/wallabag/data
       - ${DATADIR}/wallabag/images:/var/www/wallabag/web/assets/images
   shaarli:
-    image: shaarli/shaarli:stable
+    image: shaarli/shaarli:master
     expose:
       - "80"
     volumes:
-      - ${DATADIR}/shaarli:/var/www/shaarli/data      
+      - shaarli-cache:/var/www/shaarli/cache
+      - shaarli-data:/var/www/shaarli/data     
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -80,7 +81,11 @@ services:
       - ${DATADIR}/reverseproxy:/config
       - syslog:/syslog
       - downloads:/torrents_downloads
+    cap_add:
+      - NET_ADMIN # necessary for fail2ban to work      
 volumes:
   syslog:
   blog_html:
   downloads:
+  shaarli-cache:
+  shaarli-data:
