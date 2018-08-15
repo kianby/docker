@@ -1,22 +1,22 @@
 version: '3'
 
 services:
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "${PORT_PORTAINER}:9000"     # The HTTP port      
+    expose:
+      - ${PORT_PORTAINER}
   hugo-serve:
     image: hugo-serve:latest
     ports:
       - "80:80"
     volumes:
-      - ${SOURCEDIR}/blog:/site
-  stacosys:
-    image: pythonapp:latest
-    environment: 
-      APP_NAME: stacosys
-      APP_PORT: ${PORT_STACOSYS}
-      APP_CONFIG: /app/config.json
-    volumes:
-      - ${SOURCEDIR}/stacosys:/app/stacosys
-      - ${DATADIR}/stacosys/stacosys.config.json:/app/config.json
-      - ${DATADIR}/stacosys/stacosys.db.sqlite:/app/stacosys/db.sqlite
-      - blog_html:/var/www/html
-    expose:
-      - ${PORT_STACOSYS}      
+      - ${SOURCEDIR}/blog:/site     
+
+volumes:
+  portainer_data:      
