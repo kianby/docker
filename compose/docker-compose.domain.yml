@@ -32,17 +32,16 @@ services:
     volumes:
       - blog_html:/usr/share/nginx/html
   deluge:
-    image: linuxserver/deluge
+    image: sinaptika/deluge
     environment:
       TZ: "Europe/Paris"
-      PUID: ${PUID}
-      PGID: ${GUID}
-    network_mode: "host"
     ports:
       - "8112:8112"
+      - "51413:50100"
+      - "51413:50100/udp"
     volumes:
-      - deluge_config:/config
-      - downloads:/downloads
+      - deluge_config:/opt/deluge/config
+      - downloads:/opt/deluge/complete
   wallabag:
     image: wallabag/wallabag
     environment:
