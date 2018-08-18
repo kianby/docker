@@ -37,10 +37,9 @@ services:
       TZ: "Europe/Paris"
       PUID: ${PUID}
       PGID: ${GUID}
+    network_mode: "host"
     ports:
       - "8112:8112"
-      - "51413:51413/tcp"    
-      - "51413:51413/udp"
     volumes:
       - deluge_config:/config
       - downloads:/downloads
