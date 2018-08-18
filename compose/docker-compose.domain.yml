@@ -39,8 +39,8 @@ services:
       GID: ${GUID}
     ports:
       - "8080:8080"
-      - "51413:6881/tcp"    
-      - "51413:6881/udp"
+      - "51413:51413/tcp"    
+      - "51413:51413/udp"
     volumes:
       - qbit_config:/config
       - qbit_torrents:/torrents
