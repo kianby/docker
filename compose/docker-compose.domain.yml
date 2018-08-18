@@ -31,19 +31,18 @@ services:
     image: nginx:latest
     volumes:
       - blog_html:/usr/share/nginx/html
-  qbittorrent:
-    image: wernight/qbittorrent
+  deluge:
+    image: linuxserver/deluge
     environment:
       TZ: "Europe/Paris"
-      UID: ${PUID}
-      GID: ${GUID}
+      PUID: ${PUID}
+      PGID: ${GUID}
     ports:
-      - "8080:8080"
+      - "8112:8112"
       - "51413:51413/tcp"    
       - "51413:51413/udp"
     volumes:
-      - qbit_config:/config
-      - qbit_torrents:/torrents
+      - ${DATADIR}/deluge:/config
       - downloads:/downloads
   wallabag:
     image: wallabag/wallabag
