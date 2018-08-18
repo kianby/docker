@@ -42,7 +42,7 @@ services:
       - "51413:51413/tcp"    
       - "51413:51413/udp"
     volumes:
-      - ${DATADIR}/deluge:/config
+      - deluge_config:/config
       - downloads:/downloads
   wallabag:
     image: wallabag/wallabag
@@ -86,8 +86,7 @@ services:
 volumes:
   syslog:
   blog_html:
-  qbit_config:
-  qbit_torrents:
+  deluge_config:
   downloads:
   shaarli-cache:
   shaarli-data:
