@@ -31,18 +31,19 @@ services:
     image: nginx:latest
     volumes:
       - blog_html:/usr/share/nginx/html
-  transmission:
-    image: linuxserver/transmission
+  qbittorrent:
+    image: wernight/qbittorrent
     environment:
       TZ: "Europe/Paris"
-      PUID: ${PUID}
-      PGID: ${GUID}
+      UID: ${PUID}
+      GID: ${GUID}
     ports:
-      - "9091:9091"
-      - "51413:51413"    
-      - "51413:51413/udp"
+      - "8080:8080"
+      - "51413:6881/tcp"    
+      - "51413:6881/udp"
     volumes:
-      - ${DATADIR}/transmission:/config 
+      - qbit_config:/config
+      - qbit_torrents:/torrents
       - downloads:/downloads
   wallabag:
     image: wallabag/wallabag
@@ -86,6 +87,8 @@ services:
 volumes:
   syslog:
   blog_html:
+  qbit_config:
+  qbit_torrents:
   downloads:
   shaarli-cache:
   shaarli-data:
