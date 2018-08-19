@@ -61,7 +61,14 @@ services:
       - "80"
     volumes:
       - shaarli-cache:/var/www/shaarli/cache
-      - shaarli-data:/var/www/shaarli/data     
+      - shaarli-data:/var/www/shaarli/data   
+  wiki:
+    image: redmine
+    ports:
+      - "3000:3000"
+    volumes:
+      - wiki-files:/usr/src/redmine/files
+      - wiki-sqlite:/usr/src/redmine/sqlite
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -88,3 +95,5 @@ volumes:
   downloads:
   shaarli-cache:
   shaarli-data:
+  wiki-sqlite:
+  wiki-files:
