@@ -31,17 +31,19 @@ services:
     image: nginx:latest
     volumes:
       - blog_html:/usr/share/nginx/html
-  deluge:
-    image: sinaptika/deluge
+  transmission:   
+    image: linuxserver/transmission
     environment:
       TZ: "Europe/Paris"
+      PUID: ${PUID}
+      PGID: ${GUID}
     ports:
-      - "8112:8112"
-      - "51413:50100"
-      - "51413:50100/udp"
+      - "9091:9091"
+      - "51413:51413"    
+      - "51413:51413/udp"
     volumes:
-      - deluge_config:/opt/deluge/config
-      - downloads:/opt/deluge/complete
+      - transmission_config:/config 
+      - downloads:/downloads
   wallabag:
     image: wallabag/wallabag
     environment:
@@ -91,9 +93,9 @@ services:
 volumes:
   syslog:
   blog_html:
-  deluge_config:
   downloads:
   shaarli-cache:
   shaarli-data:
   wiki-sqlite:
   wiki-files:
+  transmission_config:
