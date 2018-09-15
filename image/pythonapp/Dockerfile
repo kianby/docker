@@ -12,10 +12,8 @@ RUN chmod +x usr/local/bin/docker-init.sh
 EXPOSE ${APP_PORT}
 
 WORKDIR /app
-
-COPY requirements.txt . 
-RUN python3 -m pip install -r requirements.txt
-
+ 
+RUN python3 -m pip install flask peewee pyrss2gen markdown clize flask-apscheduler profig requests diaspy
 COPY patch_diaspy/connection.py /usr/local/lib/python3.6/site-packages/diaspy/connection.py
 
 CMD ["docker-init.sh"]
