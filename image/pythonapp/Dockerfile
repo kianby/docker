@@ -1,8 +1,9 @@
-FROM python:3.6-alpine
+FROM python:3.7-alpine
 
 ENV APP_NAME appname
 ENV APP_PORT 80
 ENV APP_CONFIG /app/config.json
+ENV TZ Europe/Paris
 
 RUN apk update && apk add bash && apk add git && rm -rf /var/cache/apk/* 
 

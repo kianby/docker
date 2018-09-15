@@ -14,34 +14,19 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     ports:
-      - "${PORT_PORTAINER}:9000"     # The HTTP port      
-    expose:
-      - ${PORT_PORTAINER}
-  rabbit:
-    image: rabbit:latest
-    environment:
-      RABBITMQ_APP_USER: ${RABBITMQ_APP_USER}
-      RABBITMQ_APP_PASSWORD: ${RABBITMQ_APP_PASSWORD}
-      RABBITMQ_APP_VHOST: ${RABBITMQ_APP_VHOST}
-    expose: 
-      - "5672"
+      - "${PORT_PORTAINER}:9000"    
   srmail:
     image: pythonapp:latest
     environment: 
       APP_NAME: srmail
-      APP_CONFIG: /app/config.json    
+      APP_PORT: ${PORT_SRMAIL}
+      APP_CONFIG: /app/config.ini    
     volumes:
       - ${SOURCEDIR}/srmail:/app/srmail
-      - ${DATADIR}/srmail/srmail.config.json:/app/config.json
+      - ${DATADIR}/srmail/srmail.config.ini:/app/config.ini
       - ${DATADIR}/srmail/srmail.db.sqlite:/app/srmail/db.sqlite
-  mail2run:
-    image: pythonapp:latest
-    environment:       
-      APP_NAME: mail2run
-      APP_CONFIG: /app/config.json     
-    volumes:
-      - ${SOURCEDIR}/mail2run:/app/mail2run
-      - ${DATADIR}/mail2run/mail2run.config.json:/app/config.json
+    expose:
+      - ${PORT_SRMAIL}
   mail2diaspora:
     image: pythonapp:latest
     environment:       

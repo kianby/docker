@@ -6,10 +6,10 @@ services:
     environment: 
       APP_NAME: stacosys
       APP_PORT: ${PORT_STACOSYS}
-      APP_CONFIG: /app/config.json
+      APP_CONFIG: /app/config.ini
     volumes:
       - ${SOURCEDIR}/stacosys:/app/stacosys
-      - ${DATADIR}/stacosys/stacosys.config.json:/app/config.json
+      - ${DATADIR}/stacosys/stacosys.config.ini:/app/config.ini
       - ${DATADIR}/stacosys/stacosys.db.sqlite:/app/stacosys/db.sqlite
       - blog_html:/var/www/html
     logging:
