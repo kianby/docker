@@ -15,6 +15,17 @@ services:
       - portainer_data:/data
     ports:
       - "${PORT_PORTAINER}:9000"    
+  glances:
+    image: vimagick/glances
+    volumes:
+      - ./data:/etc/glances
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - GLANCES_OPT=-w
+    pid: host
+    restart: always      
+    expose:
+      - 61208
   srmail:
     image: pythonapp:latest
     environment: 
