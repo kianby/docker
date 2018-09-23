@@ -5,8 +5,8 @@ services:
     image: bobrik/syslog-ng    
     volumes:
       - syslog:/var/log/syslog-ng
-    expose:
-      - 514
+    ports:
+      - "127.0.0.1:514:514/udp"
   portainer:
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
@@ -60,7 +60,7 @@ services:
     logging:
       driver: syslog
       options:
-        syslog-address: "tcp://logger:514"      
+        syslog-address: "udp://127.0.0.1:514"      
         tag: "stacosys"
     expose:
       - ${PORT_STACOSYS}
