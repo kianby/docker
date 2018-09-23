@@ -5,8 +5,8 @@ services:
     image: bobrik/syslog-ng    
     volumes:
       - syslog:/var/log/syslog-ng
-    ports:
-      - "514:514"
+    expose:
+      - 514
   portainer:
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
@@ -60,7 +60,7 @@ services:
     logging:
       driver: syslog
       options:
-        syslog-address: "tcp://127.0.0.1:514"      
+        syslog-address: "tcp://logger:514"      
         tag: "stacosys"
     expose:
       - ${PORT_STACOSYS}
@@ -82,8 +82,9 @@ services:
       TZ: "Europe/Paris"
       PUID: ${PUID}
       PGID: ${GUID}
+    expose:
+     - 9091
     ports:
-      - "9091:9091"
       - "51413:51413"    
       - "51413:51413/udp"
     volumes:
@@ -111,8 +112,8 @@ services:
       - shaarli-data:/var/www/shaarli/data   
   wiki:
     image: redmine
-    ports:
-      - "3000:3000"
+    expose:
+      - 3000
     volumes:
       - wiki-files:/usr/src/redmine/files
       - wiki-sqlite:/usr/src/redmine/sqlite
