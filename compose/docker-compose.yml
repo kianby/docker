@@ -1,0 +1,149 @@
+version: '3'
+
+services:
+  logger:
+    image: bobrik/syslog-ng    
+    volumes:
+      - syslog:/var/log/syslog-ng
+    ports:
+      - "514:514"
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "${PORT_PORTAINER}:9000"    
+  glances:
+    image: vimagick/glances
+    volumes:
+      - ./data:/etc/glances
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - GLANCES_OPT=-w
+    pid: host
+    restart: always      
+    expose:
+      - 61208
+  srmail:
+    image: pythonapp:latest
+    environment: 
+      APP_NAME: srmail
+      APP_PORT: ${PORT_SRMAIL}
+      APP_CONFIG: /app/config.ini    
+    volumes:
+      - ${SOURCEDIR}/srmail:/app/srmail
+      - ${DATADIR}/srmail/srmail.config.ini:/app/config.ini
+      - ${DATADIR}/srmail/srmail.db.sqlite:/app/srmail/db.sqlite
+    expose:
+      - ${PORT_SRMAIL}
+  mail2diaspora:
+    image: pythonapp:latest
+    environment:       
+      APP_NAME: mail2diaspora
+      APP_CONFIG: /app/config.json     
+    volumes:
+      - ${SOURCEDIR}/mail2diaspora:/app/mail2diaspora
+      - ${DATADIR}/mail2diaspora/mail2diaspora.config.json:/app/config.json  
+  stacosys:
+    image: pythonapp:latest
+    environment: 
+      APP_NAME: stacosys
+      APP_PORT: ${PORT_STACOSYS}
+      APP_CONFIG: /app/config.ini
+    volumes:
+      - ${SOURCEDIR}/stacosys:/app/stacosys
+      - ${DATADIR}/stacosys/stacosys.config.ini:/app/config.ini
+      - ${DATADIR}/stacosys/stacosys.db.sqlite:/app/stacosys/db.sqlite
+      - blog_html:/var/www/html
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://127.0.0.1:514"      
+        tag: "stacosys"
+    expose:
+      - ${PORT_STACOSYS}
+  hugo-git-sync:
+    image: hugo-git-sync:latest
+    environment:
+      REPO_LINK: ${HUGO_GITURL}
+      CONFIG_FILE: /config.toml
+    volumes:
+      - ${DATADIR}/blogduyax/blog.config.toml:/config.toml
+      - blog_html:/var/www/html:z   
+  nginx-blog:
+    image: nginx:latest
+    volumes:
+      - blog_html:/usr/share/nginx/html
+  transmission:   
+    image: linuxserver/transmission
+    environment:
+      TZ: "Europe/Paris"
+      PUID: ${PUID}
+      PGID: ${GUID}
+    ports:
+      - "9091:9091"
+      - "51413:51413"    
+      - "51413:51413/udp"
+    volumes:
+      - transmission_config:/config 
+      - downloads:/downloads
+  wallabag:
+    image: wallabag/wallabag
+    environment:
+      - SYMFONY__ENV__MAILER_HOST=${SMTP_HOST}
+      - SYMFONY__ENV__MAILER_USER=${SMTP_USER}
+      - SYMFONY__ENV__MAILER_PASSWORD=${SMTP_PASSWORD}
+      - SYMFONY__ENV__FROM_EMAIL=${WALLABAG_FROM_EMAIL}
+      - SYMFONY__ENV__DOMAIN_NAME=${WALLABAG_URL}
+    expose:
+      - "80"
+    volumes:
+      - ${DATADIR}/wallabag/data:/var/www/wallabag/data
+      - ${DATADIR}/wallabag/images:/var/www/wallabag/web/assets/images
+  shaarli:
+    image: shaarli/shaarli:master
+    expose:
+      - "80"
+    volumes:
+      - shaarli-cache:/var/www/shaarli/cache
+      - shaarli-data:/var/www/shaarli/data   
+  wiki:
+    image: redmine
+    ports:
+      - "3000:3000"
+    volumes:
+      - wiki-files:/usr/src/redmine/files
+      - wiki-sqlite:/usr/src/redmine/sqlite
+  reverse-proxy:
+    image: linuxserver/letsencrypt
+    environment:
+      EMAIL: ${REVERSE_EMAIL}
+      URL: ${REVERSE_DOMAIN}
+      SUBDOMAINS: ${REVERSE_SUBDOMAINS}
+      VALIDATION: ${REVERSE_VALIDATION}
+      TZ: "Europe/Paris"
+      PUID: ${PUID}
+      PGID: ${GUID}
+    ports:
+      - "80:80"     # The HTTP port
+      - "443:443"
+    volumes:
+      - ${DATADIR}/reverseproxy:/config
+      - syslog:/syslog
+      - downloads:/torrents_downloads
+    cap_add:
+      - NET_ADMIN # necessary for fail2ban to work      
+
+volumes:
+  syslog:
+  portainer_data:
+  blog_html:
+  downloads:
+  shaarli-cache:
+  shaarli-data:
+  wiki-sqlite:
+  wiki-files:
+  transmission_config:
+
