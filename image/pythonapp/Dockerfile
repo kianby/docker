@@ -10,7 +10,7 @@ RUN apk update && apk add bash && apk add git && rm -rf /var/cache/apk/*
 COPY docker-init.sh /usr/local/bin/
 RUN chmod +x usr/local/bin/docker-init.sh
 
-EXPOSE ${APP_PORT}
+#EXPOSE ${APP_PORT}
 
 WORKDIR /app
  
