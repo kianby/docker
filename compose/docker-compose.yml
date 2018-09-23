@@ -13,8 +13,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    ports:
-      - "${PORT_PORTAINER}:9000"    
+    expose:
+      - 9000
   glances:
     image: vimagick/glances
     volumes:
