@@ -12,7 +12,7 @@ services:
     expose:
       - ${PORT_PORTAINER}
   hugo-serve:
-    image: hugo-serve:latest
+    image: kianby/hugo-serve:latest
     ports:
       - "80:80"
     volumes:
