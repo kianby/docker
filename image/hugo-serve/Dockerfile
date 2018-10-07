@@ -1,4 +1,4 @@
-FROM hugo:0.31.1
+FROM kianby/hugo:0.31.1
 
 ENV CONFIG_FILE "config.toml"
 
