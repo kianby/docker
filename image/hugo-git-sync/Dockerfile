@@ -1,4 +1,4 @@
-FROM hugo:0.31.1
+FROM kianby/hugo:0.31.1
 
 ENV PERIOD 10
 ENV REPO_LINK ""
