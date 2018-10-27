@@ -14,7 +14,7 @@ RUN chmod +x usr/local/bin/docker-init.sh
 
 WORKDIR /app
  
-RUN python3 -m pip install flask peewee pyrss2gen markdown clize flask-apscheduler profig requests
+RUN python3 -m pip install flask peewee pyrss2gen markdown flask-apscheduler profig requests
 
 # dirty diaspy installation ;-)
 RUN git clone https://github.com/kianby/diaspy.git /tmp
