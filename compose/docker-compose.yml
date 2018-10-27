@@ -42,10 +42,10 @@ services:
     image: kianby/pythonapp:latest
     environment:       
       APP_NAME: mail2diaspora
-      APP_CONFIG: /app/config.json     
+      APP_CONFIG: /app/config.ini     
     volumes:
       - ${SOURCEDIR}/mail2diaspora:/app/mail2diaspora
-      - ${DATADIR}/mail2diaspora/mail2diaspora.config.json:/app/config.json  
+      - ${DATADIR}/mail2diaspora/mail2diaspora.config.ini:/app/config.ini
   stacosys:
     image: kianby/pythonapp:latest
     environment: 
