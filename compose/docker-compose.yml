@@ -64,6 +64,14 @@ services:
         tag: "stacosys"
     expose:
       - ${PORT_STACOSYS}
+  popforward:
+    image: kianby/pythonapp:latest
+    environment:       
+      APP_NAME: popforward
+      APP_CONFIG: /app/config.ini     
+    volumes:
+      - ${SOURCEDIR}/popforward:/app/popforward
+      - ${DATADIR}/popforward/popforward.config.ini:/app/config.ini      
   hugo-git-sync:
     image: kianby/hugo-git-sync:latest
     environment:
