@@ -1,0 +1,3 @@
+# At 08:00 on Sunday
+0 8 * * 0   /usr/local/bin/backup.sh >/var/log/cron.log 2>&1
+#
