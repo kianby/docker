@@ -101,7 +101,7 @@ services:
   wallabag:
     image: wallabag/wallabag
     environment:
-      - SYMFONY__ENV__MAILER_HOST=${SMTP_HOST}
+      - SYMFONY__ENV__MAILER_HOST=${SMTP_HOST}:${SMTP_PORT}
       - SYMFONY__ENV__MAILER_USER=${SMTP_USER}
       - SYMFONY__ENV__MAILER_PASSWORD=${SMTP_PASSWORD}
       - SYMFONY__ENV__FROM_EMAIL=${WALLABAG_FROM_EMAIL}
@@ -143,8 +143,21 @@ services:
       - syslog:/syslog
       - downloads:/torrents_downloads
     cap_add:
-      - NET_ADMIN # necessary for fail2ban to work      
-
+      - NET_ADMIN # necessary for fail2ban to work
+  backup:
+    image: kianby/backuper
+    environment:
+      MAILX_SMTP_HOST: smtp://${SMTP_HOST}:${SMTP_PORT}
+      MAILX_SMTP_USER: ${SMTP_USER}
+      MAILX_SMTP_PASSWORD: ${SMTP_PASSWORD}
+      MAILX_SMTP_TOADMIN: ${SMTP_TOADMIN}
+    volumes:
+      - ${DATADIR}:/source/data:ro
+      - shaarli-cache:/source/shaarli-cache:ro
+      - shaarli-data:/source/shaarli-data:ro
+      - wiki-sqlite:/source/wiki-sqlite:ro
+      - wiki-files:/source/wiki-files:ro
+      - transmission_config:/source/transmission_config:ro
 volumes:
   syslog:
   portainer_data:
