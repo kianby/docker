@@ -151,6 +151,7 @@ services:
       MAILX_SMTP_USER: ${SMTP_USER}
       MAILX_SMTP_PASSWORD: ${SMTP_PASSWORD}
       MAILX_SMTP_TOADMIN: ${SMTP_TOADMIN}
+      BACKUP_OPTIONS: ${BACKUP_OPTIONS}
     volumes:
       - ${DATADIR}:/source/data:ro
       - shaarli-data:/source/shaarli-data:ro
