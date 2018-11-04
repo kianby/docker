@@ -153,7 +153,6 @@ services:
       MAILX_SMTP_TOADMIN: ${SMTP_TOADMIN}
     volumes:
       - ${DATADIR}:/source/data:ro
-      - shaarli-cache:/source/shaarli-cache:ro
       - shaarli-data:/source/shaarli-data:ro
       - wiki-sqlite:/source/wiki-sqlite:ro
       - wiki-files:/source/wiki-files:ro
