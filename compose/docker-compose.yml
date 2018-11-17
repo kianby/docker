@@ -71,7 +71,13 @@ services:
       APP_CONFIG: /app/config.ini     
     volumes:
       - ${SOURCEDIR}/popforward:/app/popforward
-      - ${DATADIR}/popforward/popforward.config.ini:/app/config.ini      
+      - ${DATADIR}/popforward/popforward.config.ini:/app/config.ini
+  imapscan:
+    image: domcomte/imapscan
+    volumes:
+      - imapscan_spamassassin:/var/spamassassin
+      - imapscan_imapfilter:/root/.imapfilter
+      - imapscan_accounts:/root/accounts
   hugo-git-sync:
     image: kianby/hugo-git-sync:latest
     environment:
@@ -168,4 +174,8 @@ volumes:
   wiki-sqlite:
   wiki-files:
   transmission_config:
+  imapscan_spamassassin:
+  imapscan_imapfilter:
+  imapscan_accounts:
+
 
