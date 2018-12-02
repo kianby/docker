@@ -137,8 +137,8 @@ services:
       TZ: "Europe/Paris"
       PUID: ${PUID}
       PGID: ${GUID}
-    ports:
-      - "8015:80"
+    expose:
+      - 80
   pgdb:
     image: postgres
     environment:
