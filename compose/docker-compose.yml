@@ -131,6 +131,21 @@ services:
     volumes:
       - wiki-files:/usr/src/redmine/files
       - wiki-sqlite:/usr/src/redmine/sqlite
+  tt-rss:
+    image: linuxserver/tt-rss
+    environment:
+      TZ: "Europe/Paris"
+      PUID: ${PUID}
+      PGID: ${GUID}
+    ports:
+      - "8015:80"
+  pgdb:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+      - PGDATA=/pgdata
+    volumes:
+      - pgdata:/pgdata
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -177,5 +192,6 @@ volumes:
   imapscan_spamassassin:
   imapscan_imapfilter:
   imapscan_accounts:
+  pgdata:
 
 
