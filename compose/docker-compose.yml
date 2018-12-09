@@ -147,6 +147,15 @@ services:
       - PGDATA=/pgdata
     volumes:
       - pgdata:/pgdata
+  jirafeau:
+    image: jgeusebroek/jirafeau
+    environment:
+      UID: ${PUID}
+      GID: ${GUID}
+    expose:
+      - 80
+    volumes:
+      - ${DATADIR}/jirafeau:/cfg 
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
