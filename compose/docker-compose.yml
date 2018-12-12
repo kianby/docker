@@ -156,6 +156,17 @@ services:
       - 80
     volumes:
       - ${DATADIR}/jirafeau:/cfg 
+  sabnzbd:
+    image: sabnzbd/sabnzbd
+    volumes:
+        - ${DATADIR}/sabnzbd:/datadir
+        - sabnzbd_media:/media
+    environment:
+      SABNZBD_UID: ${PUID}
+      SABNZBD_GID: ${GUID}
+    expose:
+        - 8080
+    restart: always
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -173,6 +184,7 @@ services:
       - ${DATADIR}/reverseproxy:/config
       - syslog:/syslog
       - downloads:/torrents_downloads
+      - ${DATADIR}/sabnzbd:/sabnzbd_media
     cap_add:
       - NET_ADMIN # necessary for fail2ban to work
   backup:
@@ -203,5 +215,6 @@ volumes:
   imapscan_imapfilter:
   imapscan_accounts:
   pgdata:
+  sabnzbd_media:
 
 
