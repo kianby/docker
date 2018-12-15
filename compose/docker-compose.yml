@@ -137,6 +137,8 @@ services:
       TZ: "Europe/Paris"
       PUID: ${PUID}
       PGID: ${GUID}
+    volumes:
+      - ${DATADIR}/ttrss:/config
     expose:
       - 80
   pgdb-tt-rss:
