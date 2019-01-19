@@ -131,24 +131,6 @@ services:
     volumes:
       - wiki-files:/usr/src/redmine/files
       - wiki-sqlite:/usr/src/redmine/sqlite
-  tt-rss:
-    image: linuxserver/tt-rss
-    environment:
-      TZ: "Europe/Paris"
-      PUID: ${PUID}
-      PGID: ${GUID}
-    volumes:
-      - ${DATADIR}/ttrss:/config
-    expose:
-      - 80
-  pgdb-tt-rss:
-    image: postgres
-    environment:
-      - POSTGRES_PASSWORD=${PGSQL_PASSWORD}
-      - POSTGRES_DB=tt-rss
-      - PGDATA=/pgdata
-    volumes:
-      - pgdata:/pgdata
   jirafeau:
     image: jgeusebroek/jirafeau
     environment:
@@ -161,14 +143,21 @@ services:
   sabnzbd:
     image: sabnzbd/sabnzbd
     volumes:
-        - ${DATADIR}/sabnzbd:/datadir
-        - sabnzbd_media:/media
+      - ${DATADIR}/sabnzbd:/datadir
+      - sabnzbd_media:/media
     environment:
       SABNZBD_UID: ${PUID}
       SABNZBD_GID: ${GUID}
     expose:
-        - 8080
+      - 8080
     restart: always
+  selfoss:
+    image: hardware/selfoss
+    environment:
+      UID: ${PUID}
+      GID: ${GUID}
+    volumes:
+      - ${DATADIR}/selfoss:/selfoss/data
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -216,7 +205,6 @@ volumes:
   imapscan_spamassassin:
   imapscan_imapfilter:
   imapscan_accounts:
-  pgdata:
   sabnzbd_media:
 
 
