@@ -125,12 +125,15 @@ services:
       - shaarli-cache:/var/www/shaarli/cache
       - shaarli-data:/var/www/shaarli/data   
   wiki:
-    image: redmine
+    image: gitea/gitea:latest
+    environment:
+      USER_UID: ${PUID}
+      USER_GID: ${GUID}    
+      DISABLE_SSH: "true"
     expose:
       - 3000
     volumes:
-      - wiki-files:/usr/src/redmine/files
-      - wiki-sqlite:/usr/src/redmine/sqlite
+      - ${DATADIR}/gitea:/data
   jirafeau:
     image: jgeusebroek/jirafeau
     environment:
@@ -189,8 +192,6 @@ services:
     volumes:
       - ${DATADIR}:/source/data:ro
       - shaarli-data:/source/shaarli-data:ro
-      - wiki-sqlite:/source/wiki-sqlite:ro
-      - wiki-files:/source/wiki-files:ro
       - transmission_config:/source/transmission_config:ro
 volumes:
   syslog:
@@ -199,12 +200,9 @@ volumes:
   downloads:
   shaarli-cache:
   shaarli-data:
-  wiki-sqlite:
-  wiki-files:
   transmission_config:
   imapscan_spamassassin:
   imapscan_imapfilter:
   imapscan_accounts:
   sabnzbd_media:
-
 
