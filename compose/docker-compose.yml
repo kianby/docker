@@ -134,15 +134,19 @@ services:
       - 3000
     volumes:
       - ${DATADIR}/gitea:/data
-  jirafeau:
-    image: jgeusebroek/jirafeau
-    environment:
-      UID: ${PUID}
-      GID: ${GUID}
+  gravblog: 
+    image: kianby/grav
+    restart: always
     expose:
       - 80
-    volumes:
-      - ${DATADIR}/jirafeau:/cfg 
+    environment:
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=${GRAV_ADMIN_PASSWORD}
+      - ADMIN_EMAIL=${GRAV_ADMIN_EMAIL}
+      - ADMIN_PERMISSIONS=b
+      - ADMIN_FULLNAME=Admin
+      - ADMIN_TITLE=SiteAdmin
+      - DOMAIN=${GRAV_DOMAIN}
   sabnzbd:
     image: sabnzbd/sabnzbd
     volumes:
