@@ -1,0 +1,35 @@
+version: "3"
+services:
+
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "9000:9000"  
+  web1:
+    image: kianby/tcpping
+    expose:
+      - 80
+    networks:
+      - frontend
+  web2:
+    image: kianby/tcpping
+    networks:
+      - frontend
+      - backend
+  web3:
+    image: kianby/tcpping
+    ports:
+      - 8000:80
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  portainer_data:

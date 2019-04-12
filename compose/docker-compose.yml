@@ -134,19 +134,16 @@ services:
       - 3000
     volumes:
       - ${DATADIR}/gitea:/data
-  gravblog: 
-    image: kianby/grav
-    restart: always
-    expose:
-      - 80
+  isso:
+    image: wonderfall/isso
     environment:
-      - ADMIN_USER=admin
-      - ADMIN_PASSWORD=${GRAV_ADMIN_PASSWORD}
-      - ADMIN_EMAIL=${GRAV_ADMIN_EMAIL}
-      - ADMIN_PERMISSIONS=b
-      - ADMIN_FULLNAME=Admin
-      - ADMIN_TITLE=SiteAdmin
-      - DOMAIN=${GRAV_DOMAIN}
+      GID: ${GUID}
+      UID: ${PUID}
+    volumes:
+      - ${DATADIR}/isso/config:/config
+      - ${DATADIR}/isso/db:/db
+    expose:
+      - 8080
   sabnzbd:
     image: sabnzbd/sabnzbd
     volumes:
