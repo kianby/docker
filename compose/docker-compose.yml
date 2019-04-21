@@ -93,6 +93,8 @@ services:
       - ${DATADIR}/nextcloud/data:/var/www/html/data
       - ${DATADIR}/nextcloud/config:/var/www/html/config
       - nextcloud:/var/www/html
+    expose:
+      - 9000
     restart: always  
   webcloud:
     image: nginx
