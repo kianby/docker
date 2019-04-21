@@ -106,8 +106,7 @@ services:
     volumes:
       - nextcloud:/var/www/html
     environment:
-      - MYSQL_HOST=db
-    environment:
+      - MYSQL_HOST=dbcloud
       - MYSQL_PASSWORD=${CLOUD_MYSQL_PASSWORD}
       - MYSQL_DATABASE=${CLOUD_MYSQL_DATABASE}
       - MYSQL_USER=${CLOUD_MYSQL_USER}
