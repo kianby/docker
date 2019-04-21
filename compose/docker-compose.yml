@@ -88,11 +88,11 @@ services:
     volumes:
       - ${DATADIR}/selfoss:/selfoss/data
   nextcloud:
-    image: nextcloud:fpm
+    image: nextcloud
+    ports:
+      - 8080:80
     volumes:
       - nextcloud:/var/www/html
-    expose:
-      - 9000
     restart: always
   reverse-proxy:
     image: linuxserver/letsencrypt
@@ -109,7 +109,6 @@ services:
       - "443:443"
     volumes:
       - ${DATADIR}/reverseproxy:/config
-      - nextcloud:/nextcloud
       - syslog:/syslog
     cap_add:
       - NET_ADMIN # necessary for fail2ban to work
