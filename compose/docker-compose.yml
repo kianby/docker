@@ -92,7 +92,18 @@ services:
     volumes:
       - ${DATADIR}/nextcloud/data:/var/www/html/data
       - ${DATADIR}/nextcloud/config:/var/www/html/config
-    restart: always      
+    restart: always  
+  webcloud:
+    image: nginx
+    ports:
+      - 8080:80
+    links:
+      - nextcloud
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    volumes_from:
+      - nextcloud
+    restart: always
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
