@@ -116,7 +116,6 @@ services:
     volumes:
       - ${DATADIR}:/source/data:ro
       - shaarli-data:/source/shaarli-data:ro
-      - transmission_config:/source/transmission_config:ro
 volumes:
   syslog:
   portainer_data:
