@@ -90,23 +90,9 @@ services:
   nextcloud:
     image: nextcloud:fpm
     volumes:
-      - ${DATADIR}/nextcloud/data:/var/www/html/data
-      - ${DATADIR}/nextcloud/config:/var/www/html/config
       - nextcloud:/var/www/html
     expose:
       - 9000
-    restart: always  
-  webcloud:
-    image: nginx
-    ports:
-      - 8080:80
-    links:
-      - nextcloud
-    volumes:
-      - nextcloud:/var/www/html:ro
-      - ${DATADIR}/nextcloud/nginx/nextcloud.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - nextcloud
     restart: always
   reverse-proxy:
     image: linuxserver/letsencrypt
@@ -123,6 +109,7 @@ services:
       - "443:443"
     volumes:
       - ${DATADIR}/reverseproxy:/config
+      - nextcloud:/nextcloud
       - syslog:/syslog
     cap_add:
       - NET_ADMIN # necessary for fail2ban to work
