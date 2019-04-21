@@ -87,6 +87,12 @@ services:
       GID: ${GUID}
     volumes:
       - ${DATADIR}/selfoss:/selfoss/data
+  nextcloud:
+    image: nextcloud:fpm
+    volumes:
+      - ${DATADIR}/nextcloud/data:/var/www/html/data
+      - ${DATADIR}/nextcloud/config:/var/www/html/config
+    restart: always      
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
