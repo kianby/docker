@@ -92,6 +92,7 @@ services:
     volumes:
       - ${DATADIR}/nextcloud/data:/var/www/html/data
       - ${DATADIR}/nextcloud/config:/var/www/html/config
+      - nextcloud:/var/www/html
     restart: always  
   webcloud:
     image: nginx
@@ -100,8 +101,9 @@ services:
     links:
       - nextcloud
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    volumes_from:
+      - nextcloud:/var/www/html:ro
+      - ${DATADIR}/nextcloud/nginx/nextcloud.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
       - nextcloud
     restart: always
   reverse-proxy:
@@ -141,4 +143,5 @@ volumes:
   imapscan_spamassassin:
   imapscan_imapfilter:
   imapscan_accounts:
+  nextcloud:
 
