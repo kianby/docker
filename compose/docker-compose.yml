@@ -87,13 +87,32 @@ services:
       GID: ${GUID}
     volumes:
       - ${DATADIR}/selfoss:/selfoss/data
+  dbcloud:
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - dbcloud:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${CLOUD_MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${CLOUD_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${CLOUD_MYSQL_DATABASE}
+      - MYSQL_USER=${CLOUD_MYSQL_USER}
   nextcloud:
-    image: nextcloud
+    image: nextcloud:apache
+    restart: always
     ports:
-      - 8083:80
+      - 8080:80
     volumes:
       - nextcloud:/var/www/html
-    restart: always
+    environment:
+      - MYSQL_HOST=db
+    environment:
+      - MYSQL_PASSWORD=${CLOUD_MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${CLOUD_MYSQL_DATABASE}
+      - MYSQL_USER=${CLOUD_MYSQL_USER}
+    depends_on:
+      - dbcloud
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -132,4 +151,5 @@ volumes:
   imapscan_imapfilter:
   imapscan_accounts:
   nextcloud:
+  dbcloud:
 
