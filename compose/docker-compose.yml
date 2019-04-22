@@ -98,6 +98,9 @@ services:
       - MYSQL_PASSWORD=${CLOUD_MYSQL_PASSWORD}
       - MYSQL_DATABASE=${CLOUD_MYSQL_DATABASE}
       - MYSQL_USER=${CLOUD_MYSQL_USER}
+  rediscloud:
+    image: redis:alpine
+    restart: always      
   nextcloud:
     image: nextcloud:apache
     restart: always
@@ -106,12 +109,23 @@ services:
     volumes:
       - nextcloud:/var/www/html
     environment:
+      - REDIS_HOST=rediscloud
       - MYSQL_HOST=dbcloud
       - MYSQL_PASSWORD=${CLOUD_MYSQL_PASSWORD}
       - MYSQL_DATABASE=${CLOUD_MYSQL_DATABASE}
       - MYSQL_USER=${CLOUD_MYSQL_USER}
     depends_on:
       - dbcloud
+      - rediscloud
+  croncloud:
+    image: nextcloud:apache
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - dbcloud
+      - rediscloud      
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
