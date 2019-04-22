@@ -101,8 +101,8 @@ services:
   nextcloud:
     image: nextcloud:apache
     restart: always
-    ports:
-      - 8080:80
+    expose:
+      - 80
     volumes:
       - nextcloud:/var/www/html
     environment:
