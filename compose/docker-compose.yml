@@ -125,7 +125,28 @@ services:
     entrypoint: /cron.sh
     depends_on:
       - dbcloud
-      - rediscloud      
+      - rediscloud   
+  pleroma:
+    image: sirboops/pleroma
+    restart: always
+    environment:
+      - MIX_ENV=prod
+    volumes:
+      - ${DATADIR}/pleroma/config:/opt/pleroma/config
+      - ${DATADIR}/pleroma/uploads:/opt/pleroma/uploads
+    depends_on:
+      - pleromadb
+    ports:
+      - '127.0.0.1:4000:4000'
+    networks:
+      - pleroma      
+  pleromadb:
+    image: postgres:10.3-alpine
+    restart: always
+    volumes:
+      - ${DATADIR}/pleroma/postgres:/var/lib/postgresql/data  
+    networks:
+      - pleroma          
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -166,3 +187,5 @@ volumes:
   nextcloud:
   dbcloud:
 
+networks:
+  pleroma:
