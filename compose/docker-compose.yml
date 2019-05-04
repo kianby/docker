@@ -136,8 +136,8 @@ services:
       - ${DATADIR}/pleroma/uploads:/opt/pleroma/uploads
     depends_on:
       - pleromadb
-    ports:
-      - '127.0.0.1:4000:4000'
+    expose:
+      - 4000
     networks:
       - pleroma      
   pleromadb:
