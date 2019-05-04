@@ -137,16 +137,12 @@ services:
     depends_on:
       - pleromadb
     expose:
-      - 4000
-    networks:
-      - pleroma      
+      - 4000     
   pleromadb:
     image: postgres:10.3-alpine
     restart: always
     volumes:
-      - ${DATADIR}/pleroma/postgres:/var/lib/postgresql/data  
-    networks:
-      - pleroma          
+      - ${DATADIR}/pleroma/postgres:/var/lib/postgresql/data           
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
@@ -186,6 +182,3 @@ volumes:
   imapscan_accounts:
   nextcloud:
   dbcloud:
-
-networks:
-  pleroma:
