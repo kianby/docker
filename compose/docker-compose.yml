@@ -126,7 +126,7 @@ services:
     depends_on:
       - dbcloud
       - rediscloud   
-  tweet-bot-lesnews:
+  tweetbot-lesnews:
     image: kianby/tweet-toot
     volumes:
       - ${DATADIR}/tweet-toot/config-lesnews.json:/root/tweet-toot/config.json       
