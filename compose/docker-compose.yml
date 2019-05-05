@@ -126,23 +126,10 @@ services:
     depends_on:
       - dbcloud
       - rediscloud   
-  pleroma:
-    image: sirboops/pleroma
-    restart: always
-    environment:
-      - MIX_ENV=prod
+  tweet-bot-lesnews:
+    image: kianby/tweet-toot
     volumes:
-      - ${DATADIR}/pleroma/config:/opt/pleroma/config
-      - ${DATADIR}/pleroma/uploads:/opt/pleroma/uploads
-    depends_on:
-      - pleromadb
-    expose:
-      - 4000     
-  pleromadb:
-    image: postgres:10.3-alpine
-    restart: always
-    volumes:
-      - ${DATADIR}/pleroma/postgres:/var/lib/postgresql/data           
+      - ${DATADIR}/tweet-toot/config-lesnews.json:/root/tweet-toot/config.json       
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:
