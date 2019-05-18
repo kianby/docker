@@ -2,12 +2,14 @@ version: '3'
 
 services:
   logger:
+    container_name: logger
     image: bobrik/syslog-ng    
     volumes:
       - syslog:/var/log/syslog-ng
     ports:
       - "127.0.0.1:514:514/udp"
   portainer:
+    container_name: portainer
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
     volumes:
@@ -16,6 +18,7 @@ services:
     expose:
       - 9000
   glances:
+    container_name: glances
     image: vimagick/glances
     volumes:
       - ./data:/etc/glances
@@ -27,6 +30,7 @@ services:
     expose:
       - 61208
   popforward:
+    container_name: popforward
     image: kianby/pythonapp:latest
     environment:       
       APP_NAME: popforward
@@ -35,12 +39,14 @@ services:
       - ${SOURCEDIR}/popforward:/app/popforward
       - ${DATADIR}/popforward/popforward.config.ini:/app/config.ini
   imapscan:
+    container_name: imapscan
     image: domcomte/imapscan
     volumes:
       - imapscan_spamassassin:/var/spamassassin
       - imapscan_imapfilter:/root/.imapfilter
       - imapscan_accounts:/root/accounts
   wallabag:
+    container_name: wallabag
     image: wallabag/wallabag
     environment:
       - SYMFONY__ENV__MAILER_HOST=${SMTP_HOST}:${SMTP_PORT}
@@ -54,6 +60,7 @@ services:
       - ${DATADIR}/wallabag/data:/var/www/wallabag/data
       - ${DATADIR}/wallabag/images:/var/www/wallabag/web/assets/images
   shaarli:
+    container_name: shaarli
     image: shaarli/shaarli:master
     expose:
       - "80"
@@ -61,6 +68,7 @@ services:
       - shaarli-cache:/var/www/shaarli/cache
       - shaarli-data:/var/www/shaarli/data   
   wiki:
+    container_name: wiki
     image: gitea/gitea:latest
     environment:
       USER_UID: ${PUID}
@@ -71,6 +79,7 @@ services:
     volumes:
       - ${DATADIR}/gitea:/data
   isso:
+    container_name: isso
     image: wonderfall/isso
     environment:
       GID: ${GUID}
@@ -81,6 +90,7 @@ services:
     expose:
       - 8080
   selfoss:
+    container_name: selfoss
     image: hardware/selfoss
     environment:
       UID: ${PUID}
@@ -88,6 +98,7 @@ services:
     volumes:
       - ${DATADIR}/selfoss:/selfoss/data
   dbcloud:
+    container_name: dbcloud
     image: mariadb
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
@@ -99,9 +110,11 @@ services:
       - MYSQL_DATABASE=${CLOUD_MYSQL_DATABASE}
       - MYSQL_USER=${CLOUD_MYSQL_USER}
   rediscloud:
+    container_name: rediscloud
     image: redis:alpine
     restart: always      
   nextcloud:
+    container_name: nextcloud
     image: nextcloud:apache
     restart: always
     expose:
@@ -118,6 +131,7 @@ services:
       - dbcloud
       - rediscloud
   croncloud:
+    container_name: croncloud
     image: nextcloud:apache
     restart: always
     volumes:
@@ -125,12 +139,9 @@ services:
     entrypoint: /cron.sh
     depends_on:
       - dbcloud
-      - rediscloud   
-  tweetbot-lesnews:
-    image: kianby/tweet-toot
-    volumes:
-      - ${DATADIR}/tweet-toot/config-lesnews.json:/root/tweet-toot/config.json       
+      - rediscloud      
   reverse-proxy:
+    container_name: reverseproxy
     image: linuxserver/letsencrypt
     environment:
       EMAIL: ${REVERSE_EMAIL}
@@ -148,17 +159,6 @@ services:
       - syslog:/syslog
     cap_add:
       - NET_ADMIN # necessary for fail2ban to work
-  backup:
-    image: kianby/backuper
-    environment:
-      MAILX_SMTP_HOST: smtp://${SMTP_HOST}:${SMTP_PORT}
-      MAILX_SMTP_USER: ${SMTP_USER}
-      MAILX_SMTP_PASSWORD: ${SMTP_PASSWORD}
-      MAILX_SMTP_TOADMIN: ${SMTP_TOADMIN}
-      BACKUP_OPTIONS: ${BACKUP_OPTIONS}
-    volumes:
-      - ${DATADIR}:/source/data:ro
-      - shaarli-data:/source/shaarli-data:ro
 volumes:
   syslog:
   portainer_data:
