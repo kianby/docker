@@ -164,7 +164,15 @@ services:
       - MYSQL_USER=friendica
       - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
       - MYSQL_DATABASE=friendica
-      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_EMAIL}     
+      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_ADMIN_MAIL} 
+      - FRIENDICA_TZ=${FRIENDICA_TZ}
+      - FRIENDICA_LANG=${FRIENDICA_LANG}
+      - SITENAME=${FRIENDICA_HOSTNAME}
+      - SMTP=${SMTP_HOST}
+      - SMTP_FROM=${FRIENDICA_SMTP_FROM}
+      - SMTP_STARTTLS=true
+      - SMTP_AUTH_USER=${SMTP_USER}
+      - SMTP_AUTH_PASS=${SMTP_PASSWORD}
     hostname: ${FRIENDICA_HOSTNAME}
     depends_on:
       - dbfriendica   
@@ -179,8 +187,16 @@ services:
       - MYSQL_HOST=dbfriendica
       - MYSQL_USER=friendica
       - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
-      - MYSQL_DATABASE=friendica
-      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_EMAIL}     
+      - MYSQL_DATABASE=friendica  
+      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_ADMIN_MAIL} 
+      - FRIENDICA_TZ=${FRIENDICA_TZ}
+      - FRIENDICA_LANG=${FRIENDICA_LANG}
+      - SITENAME=${FRIENDICA_HOSTNAME}
+      - SMTP=${SMTP_HOST}
+      - SMTP_FROM=${FRIENDICA_SMTP_FROM}
+      - SMTP_STARTTLS=true
+      - SMTP_AUTH_USER=${SMTP_USER}
+      - SMTP_AUTH_PASS=${SMTP_PASSWORD}         
     depends_on:
       - dbfriendica
     hostname: ${FRIENDICA_HOSTNAME}        
