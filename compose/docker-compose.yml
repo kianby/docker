@@ -139,7 +139,51 @@ services:
     entrypoint: /cron.sh
     depends_on:
       - dbcloud
-      - rediscloud      
+      - rediscloud 
+  dbfriendica:
+    container_name: dbfriendica
+    image: mariadb
+    restart: always
+    volumes:
+      - dbfriendica:/var/lib/mysql
+    environment:
+      - MYSQL_USER=friendica
+      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
+      - MYSQL_DATABASE=friendica
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+  friendica:
+    container_name: friendica
+    image: friendica/server
+    restart: always
+    volumes:
+      - friendica:/var/www/html
+    expose:
+      - 80
+    environment:
+      - MYSQL_HOST=dbfriendica
+      - MYSQL_USER=friendica
+      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
+      - MYSQL_DATABASE=friendica
+      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_EMAIL}     
+    hostname: ${FRIENDICA_HOSTNAME}
+    depends_on:
+      - dbfriendica   
+  cronfriendica:
+    container_name: cronfriendica
+    image: friendica/server
+    restart: always
+    volumes:
+      - friendica:/var/www/html
+    entrypoint: /cron.sh
+    environment:
+      - MYSQL_HOST=dbfriendica
+      - MYSQL_USER=friendica
+      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
+      - MYSQL_DATABASE=friendica
+      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_EMAIL}     
+    depends_on:
+      - dbfriendica
+    hostname: ${FRIENDICA_HOSTNAME}        
   reverse-proxy:
     container_name: reverseproxy
     image: linuxserver/letsencrypt
@@ -169,3 +213,5 @@ volumes:
   imapscan_accounts:
   nextcloud:
   dbcloud:
+  friendica:
+  dbfriendica:
