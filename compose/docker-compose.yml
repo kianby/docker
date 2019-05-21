@@ -140,6 +140,10 @@ services:
     depends_on:
       - dbcloud
       - rediscloud 
+  redisfriendica:
+    container_name: redisfriendica
+    image: redis:alpine
+    restart: always       
   dbfriendica:
     container_name: dbfriendica
     image: mariadb
@@ -153,7 +157,7 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
   friendica:
     container_name: friendica
-    image: friendica/server
+    image: kianby/friendica
     restart: always
     volumes:
       - friendica:/var/www/html
@@ -178,7 +182,7 @@ services:
       - dbfriendica   
   cronfriendica:
     container_name: cronfriendica
-    image: friendica/server
+    image: kianby/friendica
     restart: always
     volumes:
       - friendica:/var/www/html
