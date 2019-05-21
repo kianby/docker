@@ -179,7 +179,8 @@ services:
       - SMTP_AUTH_PASS=${SMTP_PASSWORD}
     hostname: ${FRIENDICA_HOSTNAME}
     depends_on:
-      - dbfriendica   
+      - dbfriendica 
+      - redisfriendica  
   cronfriendica:
     container_name: cronfriendica
     image: kianby/friendica
@@ -203,6 +204,7 @@ services:
       - SMTP_AUTH_PASS=${SMTP_PASSWORD}         
     depends_on:
       - dbfriendica
+      - redisfriendica
     hostname: ${FRIENDICA_HOSTNAME}        
   reverse-proxy:
     container_name: reverseproxy
