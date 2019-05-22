@@ -157,7 +157,7 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
   friendica:
     container_name: friendica
-    image: kianby/friendica
+    image: friendica/server
     restart: always
     volumes:
       - friendica:/var/www/html
@@ -184,7 +184,7 @@ services:
       - redisfriendica  
   cronfriendica:
     container_name: cronfriendica
-    image: kianby/friendica
+    image: friendica/server
     restart: always
     volumes:
       - friendica:/var/www/html
