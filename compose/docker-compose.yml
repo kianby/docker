@@ -161,6 +161,7 @@ services:
     restart: always
     volumes:
       - friendica:/var/www/html
+      - ${DATADIR}/friendica/local.config.php:/var/www/html/config/local.config.php
     expose:
       - 80
     environment:
@@ -187,6 +188,7 @@ services:
     restart: always
     volumes:
       - friendica:/var/www/html
+      - ${DATADIR}/friendica/local.config.php:/var/www/html/config/local.config.php
     entrypoint: /cron.sh
     environment:
       - MYSQL_HOST=dbfriendica
