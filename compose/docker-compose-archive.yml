@@ -162,6 +162,74 @@ services:
       GID: ${GUID}
     volumes:
       - ${DATADIR}/selfoss:/selfoss/data
+ redisfriendica:
+    container_name: redisfriendica
+    image: redis:alpine
+    restart: always       
+  dbfriendica:
+    container_name: dbfriendica
+    image: mariadb
+    restart: always
+    volumes:
+      - dbfriendica:/var/lib/mysql
+    environment:
+      - MYSQL_USER=friendica
+      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
+      - MYSQL_DATABASE=friendica
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+  friendica:
+    container_name: friendica
+    image: friendica/server
+    restart: always
+    volumes:
+      - friendica:/var/www/html
+      - ${DATADIR}/friendica/local.config.php:/var/www/html/config/local.config.php
+    expose:
+      - 80
+    environment:
+      - MYSQL_HOST=dbfriendica
+      - MYSQL_USER=friendica
+      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
+      - MYSQL_DATABASE=friendica
+      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_ADMIN_MAIL} 
+      - FRIENDICA_TZ=${FRIENDICA_TZ}
+      - FRIENDICA_LANG=${FRIENDICA_LANG}
+      - SITENAME=${FRIENDICA_HOSTNAME}
+      - SMTP=${SMTP_HOST}
+      - SMTP_FROM=${FRIENDICA_SMTP_FROM}
+      - SMTP_STARTTLS=true
+      - SMTP_AUTH_USER=${SMTP_USER}
+      - SMTP_AUTH_PASS=${SMTP_PASSWORD}
+    hostname: ${FRIENDICA_HOSTNAME}
+    depends_on:
+      - dbfriendica 
+      - redisfriendica  
+  cronfriendica:
+    container_name: cronfriendica
+    image: friendica/server
+    restart: always
+    volumes:
+      - friendica:/var/www/html
+      - ${DATADIR}/friendica/local.config.php:/var/www/html/config/local.config.php
+    entrypoint: /cron.sh
+    environment:
+      - MYSQL_HOST=dbfriendica
+      - MYSQL_USER=friendica
+      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
+      - MYSQL_DATABASE=friendica  
+      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_ADMIN_MAIL} 
+      - FRIENDICA_TZ=${FRIENDICA_TZ}
+      - FRIENDICA_LANG=${FRIENDICA_LANG}
+      - SITENAME=${FRIENDICA_HOSTNAME}
+      - SMTP=${SMTP_HOST}
+      - SMTP_FROM=${FRIENDICA_SMTP_FROM}
+      - SMTP_STARTTLS=true
+      - SMTP_AUTH_USER=${SMTP_USER}
+      - SMTP_AUTH_PASS=${SMTP_PASSWORD}         
+    depends_on:
+      - dbfriendica
+      - redisfriendica
+    hostname: ${FRIENDICA_HOSTNAME}           
   reverse-proxy:
     image: linuxserver/letsencrypt
     environment:

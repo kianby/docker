@@ -139,75 +139,52 @@ services:
     entrypoint: /cron.sh
     depends_on:
       - dbcloud
-      - rediscloud 
-  redisfriendica:
-    container_name: redisfriendica
-    image: redis:alpine
-    restart: always       
-  dbfriendica:
-    container_name: dbfriendica
-    image: mariadb
-    restart: always
+      - rediscloud
+  diaspora:
+    container_name: diaspora
+    image: koehn/diaspora:latest 
+    links:
+      - diaspodb
+      - diasporedis
     volumes:
-      - dbfriendica:/var/lib/mysql
-    environment:
-      - MYSQL_USER=friendica
-      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
-      - MYSQL_DATABASE=friendica
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-  friendica:
-    container_name: friendica
-    image: friendica/server
-    restart: always
-    volumes:
-      - friendica:/var/www/html
-      - ${DATADIR}/friendica/local.config.php:/var/www/html/config/local.config.php
+      - diaspopublic:/home/diaspora/diaspora/public
+      - ${DATADIR}/diaspora/diaspora.yml:/home/diaspora/diaspora/config/diaspora.yml:ro
+      - ${DATADIR}/diaspora/database.yml:/home/diaspora/diaspora/config/database.yml:ro
     expose:
-      - 80
-    environment:
-      - MYSQL_HOST=dbfriendica
-      - MYSQL_USER=friendica
-      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
-      - MYSQL_DATABASE=friendica
-      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_ADMIN_MAIL} 
-      - FRIENDICA_TZ=${FRIENDICA_TZ}
-      - FRIENDICA_LANG=${FRIENDICA_LANG}
-      - SITENAME=${FRIENDICA_HOSTNAME}
-      - SMTP=${SMTP_HOST}
-      - SMTP_FROM=${FRIENDICA_SMTP_FROM}
-      - SMTP_STARTTLS=true
-      - SMTP_AUTH_USER=${SMTP_USER}
-      - SMTP_AUTH_PASS=${SMTP_PASSWORD}
-    hostname: ${FRIENDICA_HOSTNAME}
-    depends_on:
-      - dbfriendica 
-      - redisfriendica  
-  cronfriendica:
-    container_name: cronfriendica
-    image: friendica/server
+      - 3000
     restart: always
-    volumes:
-      - friendica:/var/www/html
-      - ${DATADIR}/friendica/local.config.php:/var/www/html/config/local.config.php
-    entrypoint: /cron.sh
+  diaspodb:
+    container_name: diaspodb
+    read_only: true
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+    image: postgres:10-alpine
+    tmpfs:
+    - /tmp
     environment:
-      - MYSQL_HOST=dbfriendica
-      - MYSQL_USER=friendica
-      - MYSQL_PASSWORD=${FRIENDICA_DB_PASSWORD}
-      - MYSQL_DATABASE=friendica  
-      - FRIENDICA_ADMIN_MAIL=${FRIENDICA_ADMIN_MAIL} 
-      - FRIENDICA_TZ=${FRIENDICA_TZ}
-      - FRIENDICA_LANG=${FRIENDICA_LANG}
-      - SITENAME=${FRIENDICA_HOSTNAME}
-      - SMTP=${SMTP_HOST}
-      - SMTP_FROM=${FRIENDICA_SMTP_FROM}
-      - SMTP_STARTTLS=true
-      - SMTP_AUTH_USER=${SMTP_USER}
-      - SMTP_AUTH_PASS=${SMTP_PASSWORD}         
-    depends_on:
-      - dbfriendica
-      - redisfriendica
-    hostname: ${FRIENDICA_HOSTNAME}        
+      - POSTGRES_USER=${DIASPORA_DB_USER}
+      - POSTGRES_PASSWORD=${DIASPORA_DB_PASSWORD}
+      - POSTGRES_DB=${DIASPORA_DB_NAME}
+    volumes:
+      - diaspodb:/var/lib/postgresql/data
+      - diaspodb-run:/var/run/postgresql
+    restart: always
+  diasporedis:
+    container_name: diasporedis
+    image: redis:latest
+    deploy:    
+      resources:
+        limits:
+          memory: 384M
+    read_only: true
+    tmpfs:
+    - /tmp
+    command: redis-server --appendonly yes
+    volumes:
+      - diasporedis:/data
+    restart: always
   reverse-proxy:
     container_name: reverseproxy
     image: linuxserver/letsencrypt
@@ -223,6 +200,7 @@ services:
       - "80:80"     # The HTTP port
       - "443:443"
     volumes:
+      - diaspopublic:/diaspora/public
       - ${DATADIR}/reverseproxy:/config
       - syslog:/syslog
     cap_add:
@@ -237,5 +215,8 @@ volumes:
   imapscan_accounts:
   nextcloud:
   dbcloud:
-  friendica:
-  dbfriendica:
+  diaspopublic:
+  diaspodb:
+  diaspodb-run:
+  diasporedis:
+
