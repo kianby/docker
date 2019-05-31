@@ -97,7 +97,8 @@ services:
       GID: ${GUID}
     volumes:
       - ${DATADIR}/selfoss:/selfoss/data
-  transmission:   
+  transmission:
+    container_name: transmission   
     image: linuxserver/transmission
     environment:
       TZ: "Europe/Paris"
