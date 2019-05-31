@@ -97,6 +97,20 @@ services:
       GID: ${GUID}
     volumes:
       - ${DATADIR}/selfoss:/selfoss/data
+  transmission:   
+    image: linuxserver/transmission
+    environment:
+      TZ: "Europe/Paris"
+      PUID: ${PUID}
+      PGID: ${GUID}
+    expose:
+     - 9091
+    ports:
+      - "51413:51413"    
+      - "51413:51413/udp"
+    volumes:
+      - transmission_config:/config 
+      - transmission_downloads:/downloads      
   dbcloud:
     container_name: dbcloud
     image: mariadb
@@ -200,6 +214,7 @@ services:
       - "80:80"     # The HTTP port
       - "443:443"
     volumes:
+      - transmission_downloads:/transmission_downloads
       - diaspopublic:/diaspora/public
       - ${DATADIR}/reverseproxy:/config
       - syslog:/syslog
@@ -219,4 +234,6 @@ volumes:
   diaspodb:
   diaspodb-run:
   diasporedis:
+  transmission_downloads:
+  transmission_config:
 
