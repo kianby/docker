@@ -10,6 +10,8 @@ services:
       - portainer_data:/data
     networks:
       - srv
+    restart: unless-stopped
+
 
 volumes:
   portainer_data:

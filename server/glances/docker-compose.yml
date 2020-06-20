@@ -13,6 +13,8 @@ services:
     restart: unless-stopped
     networks:
       - srv
+    expose:
+      - 61208
   
 volumes:
   glances_data:
