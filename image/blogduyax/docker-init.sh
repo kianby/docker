@@ -4,6 +4,7 @@
 cd / 
 git clone https://github.com/kianby/blog.git
 cd /blog
+rm -rf _site
 make
 
 # nginx serve
