@@ -1,14 +1,18 @@
-FROM python:3.7-alpine
+FROM python:3.9-alpine
 
-RUN apk update && apk add bash && apk add git && rm -rf /var/cache/apk/* 
+ARG STACOSYS_VERSION=2.0b3
+ARG STACOSYS_FILENAME=stacosys-${STACOSYS_VERSION}-py3-none-any.whl
+
+RUN apk update && apk add bash && apk add wget && rm -rf /var/cache/apk/* 
 
 COPY docker-init.sh /usr/local/bin/
 RUN chmod +x usr/local/bin/docker-init.sh
 
-RUN cd / && git clone https://github.com/kianby/stacosys.git
+RUN cd /
+#COPY ${STACOSYS_FILENAME} /
+RUN wget https://github.com/kianby/stacosys/releases/download/${STACOSYS_VERSION}/${STACOSYS_FILENAME}
+RUN python3 -m pip install ${STACOSYS_FILENAME} --target /stacosys
+RUN rm -f ${STACOSYS_FILENAME}
 
 WORKDIR /stacosys
- 
-RUN python3 -m pip install flask peewee pyrss2gen markdown flask-apscheduler profig requests
-
 CMD ["docker-init.sh"]
